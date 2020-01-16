@@ -22,25 +22,29 @@
         <br style="clear: both;" />
         <hr />
         <div v-if="isInDepthView == false">
-        <div v-for="item in seznam" style="float:left; width: 47%; margin: 10px;">
-            <div v-on:click="showSingle()" class="ui card" style="width: 100%;">
-                <div class="image">
-                    <img style="height: 30vh"
-                        v-bind:src="item['urlToImage'] != null ? item['urlToImage'] : 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2c2e3136-022c-4c0a-ad02-38c7398607dd/d5qvsdn-adaf7078-a957-4d20-90f6-1a763f488d50.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJjMmUzMTM2LTAyMmMtNGMwYS1hZDAyLTM4YzczOTg2MDdkZFwvZDVxdnNkbi1hZGFmNzA3OC1hOTU3LTRkMjAtOTBmNi0xYTc2M2Y0ODhkNTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.DS6p0W9Z-AKb88eV0by09PLu4MYDeOg7jzJthhMJ6Ls'">
-                </div>
-                <div class="content">
-                    <a class="header" style="white-space: nowrap; overflow: hidden;">{{ item["title"] }}</a>
-                    <div class="meta">
-                        <span class="date">{{ item["author"] != null ? item["author"] : 'NI KEKCA' }}</span>
+            <div v-for="(item, index) in seznam" style="float:left; width: 47%; margin: 10px;">
+                <div v-on:click="showSingle(index)" class="ui card" style="width: 100%;">
+                    <div class="image">
+                        <img style="height: 30vh"
+                            v-bind:src="item['urlToImage'] != null ? item['urlToImage'] : 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2c2e3136-022c-4c0a-ad02-38c7398607dd/d5qvsdn-adaf7078-a957-4d20-90f6-1a763f488d50.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJjMmUzMTM2LTAyMmMtNGMwYS1hZDAyLTM4YzczOTg2MDdkZFwvZDVxdnNkbi1hZGFmNzA3OC1hOTU3LTRkMjAtOTBmNi0xYTc2M2Y0ODhkNTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.DS6p0W9Z-AKb88eV0by09PLu4MYDeOg7jzJthhMJ6Ls'">
                     </div>
-                    <div class="description">
-                        {{ item["publishedAt"] | formatDate }}
+                    <div class="content">
+                        <a class="header" style="white-space: nowrap; overflow: hidden;">{{ item["title"] }}</a>
+                        <div class="meta">
+                            <span class="date">{{ item["author"] != null ? item["author"] : 'NI KEKCA' }}</span>
+                        </div>
+                        <div class="description">
+                            {{ item["publishedAt"] | formatDate }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div v-else>
+            <iframe style="width: 100%; height: 80vh" v-bind:src="seznam[singleIndex]['url']">
+                <p>Your browser does not support iframes.</p>
+            </iframe>
         </div>
-        <div v-else>is in depth view</div>
     </div>
 
     <script>
@@ -52,6 +56,7 @@
                 el: "#root",
                 data: () => ({
                     seznam: [],
+                    singleIndex: null,
                     isInDepthView: false
                 }),
                 created: function () {
@@ -75,8 +80,9 @@
                     close() {
                         ipcRenderer.send('request-app-close');
                     },
-                    showSingle() {
+                    showSingle(index) {
                         this.isInDepthView = true;
+                        this.singleIndex = index;
                     }
                 }
             });
